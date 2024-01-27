@@ -23,8 +23,10 @@ def obtain_video_id(lang, fn_word, outdir="videoid", wait_sec=0.2):
   fn_videoid = Path(outdir) / lang / f"{Path(fn_word).stem}.txt"
   fn_videoid.parent.mkdir(parents=True, exist_ok=True)
 
-  with open(fn_videoid, "w") as f:
-    for word in tqdm(list(open(fn_word, "r").readlines())):
+  # windowsの場合、UnicodeDecodeError: 'cp932' codec can't decode byte 0x84 in position 65: illegal multibyte sequence
+  # が発生するので、encoding="utf-8"を指定する
+  with open(fn_videoid, "w", encoding="utf-8") as f:
+    for word in tqdm(list(open(fn_word, "r", encoding="utf-8").readlines())):
       try:
         # download search results
         url = make_query_url(word)
